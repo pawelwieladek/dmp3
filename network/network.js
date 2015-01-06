@@ -36,12 +36,12 @@ Network.prototype.run = function(input) {
 };
 
 /**
- * Information gain needs to know results for current data set
+ * Information gain needs to know the partition of results for current data set
  * We calculate partition of good & bad classification for first & second class
- * Then using entropy we get current information gain
  * @param data
+ * @returns {{p_high: number, n_high: number, p_low: number, n_low: number}}
  */
-Network.prototype.getInformationGain = function(data) {
+Network.prototype.getNetworkPartition = function(data) {
     var classes = [1.0,0.0];
     var firstClass = classes[0];
     var secondClass = classes[1];
@@ -53,6 +53,8 @@ Network.prototype.getInformationGain = function(data) {
     var NegativeExamplesHighCount = 0;
     // count of network output = "second class" for negative examples
     var NegativeExamplesLowCount = 0;
+    // set of examples incorrectly classified by the network
+    var InCorrectlyClassifiedExamples = [];
     // iterate all examples
     data.forEach(function(datum) {
         // get target class expected by the example
@@ -68,6 +70,8 @@ Network.prototype.getInformationGain = function(data) {
             } else if (networkOutput == secondClass) {
                 // update count of low network outputs
                 PositiveExamplesLowCount++;
+                // store incorrectly classified example
+                InCorrectlyClassifiedExamples.push({datum: datum, networkOutput: networkOutput});
             } else {
                 console.log("Expected example output not within expected classes.");
             }
@@ -76,6 +80,8 @@ Network.prototype.getInformationGain = function(data) {
             if(networkOutput == firstClass) {
                 // update count of high network outputs
                 NegativeExamplesHighCount++;
+                // store incorrectly classified example
+                InCorrectlyClassifiedExamples.push({datum: datum, networkOutput: networkOutput});
             } else if (networkOutput == secondClass) {
                 // update count of low network outputs
                 NegativeExamplesLowCount++;
@@ -86,11 +92,29 @@ Network.prototype.getInformationGain = function(data) {
             console.log("Expected example output not within expected classes.");
         }
     }.bind(this));
-    var p_high = PositiveExamplesHighCount;
-    var n_high = NegativeExamplesHighCount;
-    var p_low = PositiveExamplesLowCount;
-    var n_low = NegativeExamplesLowCount;
-    return Utils.informationGain(p_high,n_high,p_low,n_low);
+
+    return {
+        positiveExamplesHighCount: PositiveExamplesHighCount,
+        negativeExamplesHighCount: NegativeExamplesHighCount,
+        positiveExamplesLowCount: PositiveExamplesLowCount,
+        negativeExamplesLowCount: NegativeExamplesLowCount,
+        inCorrectlyClassifiedExamples: InCorrectlyClassifiedExamples,
+        classes: classes
+    };
+};
+
+/**
+ * Gets current information gain using entropy for partition of results for current data set
+ * @param data
+ */
+Network.prototype.getInformationGain = function(data) {
+    var partition = this.getNetworkPartition(data);
+    return Utils.informationGain(
+        partition.positiveExamplesHighCount,
+        partition.negativeExamplesHighCount,
+        partition.positiveExamplesLowCount,
+        partition.negativeExamplesLowCount
+    );
 };
 
 /**
@@ -106,6 +130,7 @@ Network.prototype.improvementDrivenTraining = function(data) {
 
 /**
  *
+ * @param data
  * @param iterations
  */
 Network.prototype.informationGainTrain = function(data,iterations) {
@@ -114,10 +139,27 @@ Network.prototype.informationGainTrain = function(data,iterations) {
     {
         // get current information gain for the network
         var currentEntropy = this.getInformationGain(data);
+        var partition = this.getNetworkPartition(data);
         // get entropy of network with 1 less negative example error
-        var negativeEntropy; // todo: implement
+        var negativeEntropy = 0;
+        if(partition.negativeExamplesHighCount > 0) {
+            negativeEntropy = Utils.informationGain(
+                partition.positiveExamplesHighCount,
+                partition.negativeExamplesHighCount - 1,
+                partition.positiveExamplesLowCount,
+                partition.negativeExamplesLowCount + 1
+            );
+        }
         // get entropy of network with 1 less positive example error
-        var positiveEntropy; // todo: implement
+        var positiveEntropy = 0;
+        if(partition.positiveExamplesLowCount > 0) {
+            positiveEntropy = Utils.informationGain(
+                partition.positiveExamplesHighCount + 1,
+                partition.negativeExamplesHighCount,
+                partition.positiveExamplesLowCount - 1,
+                partition.negativeExamplesLowCount
+            );
+        }
         // get information gain for 1 less negative example error
         var negativeInformationGain = currentEntropy - negativeEntropy;
         // get information gain for 1 less positive example error
@@ -127,14 +169,21 @@ Network.prototype.informationGainTrain = function(data,iterations) {
         var adjustedNegativeInformationGain = negativeInformationGain / normalizedValue;
         var adjustedPositiveInformationGain = positiveInformationGain / normalizedValue;
         // randomly permutate training instances
-        // todo: implement
-        //for each incorrectly classified example e in the training set
-        //    error = CalcError(net, e)
-        //    if e.target = high let error = error * pos_err_adjust
-        //    else error = error * neg_err_adjust
-        //    // Update the nonfrozen weights with standard back propagation
-        //    UpdateNonfrozenWeights(net,error)
-        //endfor
+        // var shuffledData = _.shuffle(data); // what is the point?
+        partition.inCorrectlyClassifiedExamples.forEach(function(example) {
+            //error = CalcError(net, datum)
+            var error = example.datum.output - example.networkOutput;
+            if(example.datum.output == partition.classes[0]) {
+                // positive example (expected class is first class / high)
+                error *= adjustedPositiveInformationGain;
+            } else {
+                // negative example (expected class is second class / low)
+                error *= adjustedNegativeInformationGain;
+            }
+            //console.log("informationGainTrain - error: " + error);
+            //Update the nonfrozen weights with standard back propagation
+            //todo: implement >> UpdateNonfrozenWeights(net,error)
+        });
     }
 };
 

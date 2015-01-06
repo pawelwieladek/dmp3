@@ -57,3 +57,5 @@ for(var k = 0; k < 7; k ++) {
     });
 }
 console.log("DMP3 example of O's and X's: " + net.getInformationGain(data));
+console.log("Training with information gain: ");
+net.informationGainTrain(data,1)
