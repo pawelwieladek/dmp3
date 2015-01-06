@@ -1,5 +1,6 @@
 var _ = require("underscore");
 var Network = require("../network/network");
+var Dmp3 = require("../network/dmp3");
 
 var data = [];
 var totalData = 10;
@@ -59,4 +60,5 @@ for(var k = 0; k < 7; k ++) {
 }
 console.log("DMP3 example of O's and X's: " + net.getInformationGain(data));
 console.log("Training with information gain: ");
-net.informationGainTrain(data,1)
+dmp3 = new Dmp3();
+dmp3.learn(data);

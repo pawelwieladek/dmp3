@@ -1,3 +1,4 @@
+var _ = require("underscore");
 var Utils = require("./utils");
 var RootNode = require("./root-node");
 
@@ -118,17 +119,6 @@ Network.prototype.getInformationGain = function(data) {
 };
 
 /**
- * Improvement driven training aka "IDT"
- * Is used to train new children when they are added to DMP3 network.
- * @param data
- */
-Network.prototype.improvementDrivenTraining = function(data) {
-    var iterations = 1000;
-    this.informationGainTrain(data,iterations);
-    this.lazyTrain(data,10,20);
-};
-
-/**
  *
  * @param data
  * @param iterations
@@ -187,25 +177,9 @@ Network.prototype.informationGainTrain = function(data,iterations) {
     }
 };
 
-/**
- *
- * @param data
- * @param iterations
- * @param maxtries
- */
-Network.prototype.lazyTrain = function(data,iterations,maxtries) {
-    var bestNetwork = this;//todo: clone
-    var currentNetwork = this;//todo: clone
-    for(var i = 0; i < maxtries; i++)
-    {
-        currentNetwork.informationGainTrain(data,iterations);
-        if(currentNetwork.getInformationGain(data) > bestNetwork.getInformationGain(data))
-        {
-            bestNetwork = currentNetwork;//todo: clone
-            i = 0;
-        }
-    }
-    return bestNetwork;
+Network.prototype.clone = function clone() {
+    var newNetwork = new Network();
+    return _.extend(newNetwork,this);
 };
 
 module.exports = Network;
