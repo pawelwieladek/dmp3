@@ -86,6 +86,15 @@ Layer.prototype.calculateDeltas = function(activationDerivative, parentDelta) {
     }
 };
 
+Layer.prototype.adjustWeights = function(learningRate, momentum, delta) {
+    var i;
+
+    for(i = 0; i < this.nodes.length; i++) {
+        this.changes[i] = (learningRate * delta * this.nodes[i].output) + (momentum * this.changes[i]);
+        this.weights[i] += this.changes[i];
+    }
+};
+
 var RootNode = function() {
     Node.call(this);
     this.inputLayer = new Layer();
@@ -123,13 +132,7 @@ RootNode.prototype.calculateDeltas = function(output, activationDerivative) {
 };
 
 RootNode.prototype.adjustWeights = function(learningRate, momentum) {
-    var i;
-
-    for(i = 0; i < this.inputLayer.nodes.length; i++) {
-        this.inputLayer.changes[i] = (learningRate * this.delta * this.inputLayer.nodes[i].output) + (momentum * this.inputLayer.changes[i]);
-        this.inputLayer.weights[i] += this.inputLayer.changes[i];
-    }
-
+    this.inputLayer.adjustWeights(learningRate, momentum, this.delta);
     this.bias += learningRate * this.delta;
 };
 
