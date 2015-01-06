@@ -124,7 +124,7 @@ Network.prototype.getInformationGain = function(data) {
  */
 Network.prototype.improvementDrivenTraining = function(data) {
     var iterations = 1000;
-    this.informationGainTrain(data,1000);
+    this.informationGainTrain(data,iterations);
     this.lazyTrain(data,10,20);
 };
 
@@ -189,11 +189,23 @@ Network.prototype.informationGainTrain = function(data,iterations) {
 
 /**
  *
+ * @param data
  * @param iterations
  * @param maxtries
  */
-Network.prototype.lazyTrain = function(iterations,maxtries) {
-
+Network.prototype.lazyTrain = function(data,iterations,maxtries) {
+    var bestNetwork = this;//todo: clone
+    var currentNetwork = this;//todo: clone
+    for(var i = 0; i < maxtries; i++)
+    {
+        currentNetwork.informationGainTrain(data,iterations);
+        if(currentNetwork.getInformationGain(data) > bestNetwork.getInformationGain(data))
+        {
+            bestNetwork = currentNetwork;//todo: clone
+            i = 0;
+        }
+    }
+    return bestNetwork;
 };
 
 module.exports = Network;
