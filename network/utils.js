@@ -56,3 +56,30 @@ module.exports.randoms = function randoms(size, randomFunction) {
     }
     return array;
 };
+
+module.exports.information = function information(p, n) {
+    var result = -( (p / (p + n)) * this.log(2, p / (p + n)) + (n / (p + n)) * this.log(2, n / (p + n)) );
+    return result;
+};
+
+module.exports.informationPartition = function informationPartition(p_high, n_high, p_low, n_low) {
+    var p = p_high + p_low;
+    var n = n_high + n_low;
+    var result = ((p_high + n_high) / (p + n)) * this.information(p_high, n_high) + ((p_low + n_low) / (p + n)) * this.information(p_low, n_low);
+    return result;
+};
+
+module.exports.informationGain = function informationGain(p_high, n_high, p_low, n_low) {
+    var p = p_high + p_low;
+    var n = n_high + n_low;
+    var result = this.information(p, n) - this.informationPartition(p_high, n_high, p_low, n_low);
+    return result;
+};
+
+module.exports.log = function log(base, n) {
+    if(n == 0) {
+        return 0;
+    }
+    var result = Math.log(n) / Math.log(base);
+    return result;
+};
