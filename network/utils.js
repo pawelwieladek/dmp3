@@ -17,6 +17,14 @@ module.exports.tanhDerivative = function tanhDerivative(x) {
     return 1 - Math.pow(x, 2);
 };
 
+module.exports.sigmoid = function sigmoid(x) {
+    return 1 / (1 + Math.exp(-x));
+}
+
+module.exports.sigmoidDerivative = function sigmoidDerivative(x) {
+    return (1 - x) * x;
+}
+
 module.exports.randomRange = function randomRange(min, max) {
     return Math.random() * (max - min) + min;
 };

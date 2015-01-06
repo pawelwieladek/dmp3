@@ -19,7 +19,7 @@ var identity = function(input) {
 for(var i = -totalData; i < totalData; i++) {
     data.push({
         input: normalizeInput(i),
-        output: identity(i)
+        output: determineSign(i)
     });
 }
 
@@ -29,6 +29,6 @@ var net = new Network();
 net.rootNode.childrenLayer.addChildrenNodes(data[0].input.length);
 net.train(data);
 
-var result = net.run(normalizeInput(-5));
+var result = net.run(normalizeInput(5));
 
 console.log(result);
