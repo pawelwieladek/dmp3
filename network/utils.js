@@ -25,6 +25,14 @@ module.exports.randomBipolar = function randomBipolar() {
     return module.exports.randomRange(-0.5, 0.5);
 };
 
+module.exports.randomPositive = function randomBipolar() {
+    return module.exports.randomRange(-0.0, 0.5);
+};
+
+module.exports.randomNegative = function randomBipolar() {
+    return module.exports.randomRange(-0.5, 0.0);
+};
+
 module.exports.zeros = function zeros(size) {
     var array = new Array(size);
     for (var i = 0; i < size; i++) {
