@@ -1,4 +1,3 @@
-var Edge = require("./base/edge");
 var Node = require("./base/node");
 var ParentNode = require("./base/parent-node");
 

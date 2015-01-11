@@ -11,8 +11,6 @@ InputNode.prototype.feedForward = function(input) {
     this.output = input;
 };
 
-InputNode.prototype.feedForward = function() { };
-
 InputNode.prototype.adjustWeights = function() { };
 
 InputNode.prototype.freeze = function() { };

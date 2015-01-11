@@ -1,7 +1,6 @@
 var Edge = require("./base/edge");
 var ParentNode = require("./base/parent-node");
 var Utils = require("./utils");
-var InputNode = require("./input-node");
 var ChildNode = require("./child-node");
 
 var RootNode = function(options) {
