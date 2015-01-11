@@ -1,22 +1,23 @@
 var _ = require("underscore");
 var Utils = require("./utils");
 var RootNode = require("./root-node");
+var ChildNode = require("./child-node");
 
 var Network = function(options) {
     options = options || {};
     this.rootNode = new RootNode();
     this.activationFunction = options.activationFunction || Utils.sigmoid;
     this.activationDerivative = options.activationDerivative || Utils.sigmoidDerivative;
-    this.learningRate = options.learningRate || 0.5;
-    this.momentum = options.momentum || 0.5;
-    this.iterations = options.iterations || 50000;
+    this.learningRate = options.learningRate || 0.4;
+    this.momentum = options.momentum || 0.2;
+    this.iterations = options.iterations || 10000;
 };
 
 Network.prototype.train = function(data) {
     var i;
 
     var inputSize = data[0].input.length;
-    this.rootNode.initialize(inputSize);
+    this.rootNode.initializeInput(inputSize);
 
     for(i = 0; i < this.iterations; i++) {
         data.forEach(function (datum) {
@@ -27,7 +28,7 @@ Network.prototype.train = function(data) {
 
 Network.prototype.learn = function(input, output) {
     this.rootNode.feedForward(input, this.activationFunction);
-    this.rootNode.calculateDeltas(output, this.activationDerivative);
+    this.rootNode.calculateDelta(output, this.activationDerivative);
     this.rootNode.adjustWeights(this.learningRate, this.momentum);
 };
 

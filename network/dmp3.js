@@ -71,18 +71,7 @@ Dmp3.prototype.learn = function(data) {
          allocate a left and right child with h hidden nodes each
          connect each of these children to the root node of new_net
          */
-        newNetwork.rootNode.childrenLayer.addChildrenNodes(data[0].input.length);
-        //todo: implement settings number of hidden nodes
-        /*
-         set left child to root node weight = 10
-         */
-        // left child is that with positive weight so index 0 in our structure
-        newNetwork.rootNode.childrenLayer.weights[0] = 10;
-        /*
-        set right child to root node weight = -10
-         */
-        // right child is that with negative weight so index 1 in our structure
-        newNetwork.rootNode.childrenLayer.weights[1] = -10;
+        newNetwork.rootNode.expandWith(numberOfHiddenNodes);
 
         /*
          train 3 copies of new_net with IDT

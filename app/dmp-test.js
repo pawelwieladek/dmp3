@@ -27,18 +27,9 @@ for(i = -totalData; i < totalData; i++) {
 data = _.shuffle(data);
 
 var net = new Network();
-net.rootNode.childrenLayer.addChildrenNodes(data[0].input.length);
+
 net.train(data);
 
-console.log("Backpropagation tests");
-
-var result;
-result = net.run(normalizeInput(9));
-console.log("Expected: 1");
-console.log("Actual: " + result);
-result = net.run(normalizeInput(-9));
-console.log("Expected: 0");
-console.log("Actual: " + result);
 
 // test information gain with example of O's and X's from DMP3 description
 console.log("Information Gain tests");
