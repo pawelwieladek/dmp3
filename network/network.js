@@ -178,8 +178,7 @@ Network.prototype.informationGainTrain = function(data,iterations) {
 };
 
 Network.prototype.clone = function clone() {
-    var newNetwork = new Network();
-    return _.extend(newNetwork, this);
+    return Utils.copy(this);
 };
 
 module.exports = Network;

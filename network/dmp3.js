@@ -98,7 +98,7 @@ Dmp3.prototype.learn = function(data) {
         }
         networks.forEach(function(network){
             // train network
-            network.improvementDrivenTraining(data);
+            this.improvementDrivenTraining(network,data);
             // get information gain
             var networkInformationGain = network.getInformationGain(data);
             // check if information gain is better than in new network
@@ -108,7 +108,7 @@ Dmp3.prototype.learn = function(data) {
                 newNetwork = network;
                 newNetworkInformationGain = networkInformationGain;
             }
-        });
+        }.bind(this));
         networks = null;
 
         // // check if new network information gain is better than in current network
