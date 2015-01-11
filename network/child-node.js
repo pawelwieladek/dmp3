@@ -1,39 +1,30 @@
-var Node = require("./node");
-var Layer = require("./layer");
+var Edge = require("./base/edge");
+var Utils = require("./utils");
+var HiddenNode = require("./hidden-node");
 
 var ChildNode = function(options) {
-    Node.call(this, options);
-    this.inputLayer = new Layer();
+    HiddenNode.call(this, options);
+    this.edges = [];
 };
 
-ChildNode.prototype = new Node();
-ChildNode.prototype.constructor = Node;
+ChildNode.prototype = new HiddenNode();
+ChildNode.prototype.constructor = ChildNode;
 
-ChildNode.prototype.initialize = function(inputSize) {
-    this.inputLayer.initialize(inputSize);
+ChildNode.prototype.expand = function (weightFunction) {
+    weightFunction = weightFunction || Utils.randomBipolar;
+
+    var hidden = new HiddenNode({ bias: weightFunction() });
+    hidden.initializeInput(this.inputSize);
+
+    var edge = new Edge(hidden, { weight: weightFunction() });
+    this.edges.push(edge);
 };
 
-ChildNode.prototype.feedForward = function(input, activationFunction) {
-    var sum = 0;
-
-    this.inputLayer.updateOutput(input);
-
-    sum += this.bias;
-    sum += this.inputLayer.getWeightedSum();
-
-    this.output = activationFunction(sum);
-};
-
-ChildNode.prototype.calculateDeltas = function(parentWeight, parentDelta, activationDerivative) {
-    this.error = parentWeight * parentDelta;
-    this.delta = this.error * activationDerivative(this.output);
-
-    this.inputLayer.calculateDeltas(activationDerivative, this.delta);
-};
-
-ChildNode.prototype.adjustWeights = function(learningRate, momentum) {
-    // adjust weights of hidden nodes
-    this.bias += learningRate * this.delta;
+ChildNode.prototype.expandWith = function(hiddenNodesNumber) {
+    var i;
+    for(i = 0; i < hiddenNodesNumber; i++) {
+        this.expand();
+    }
 };
 
 module.exports = ChildNode;
