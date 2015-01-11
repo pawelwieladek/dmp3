@@ -32,9 +32,18 @@ Network.prototype.learn = function(input, output) {
     this.rootNode.adjustWeights(this.learningRate, this.momentum);
 };
 
+Network.prototype.backpropagateError = function(error) {
+    this.rootNode.calculateDeltaForError(error, this.activationDerivative);
+    this.rootNode.adjustWeights(this.learningRate, this.momentum);
+};
+
 Network.prototype.run = function(input) {
     this.rootNode.feedForward(input, this.activationFunction);
     return this.rootNode.output;
+};
+
+Network.prototype.freeze = function() {
+    this.rootNode.freezeRecursive();
 };
 
 /**
@@ -160,7 +169,7 @@ Network.prototype.informationGainTrain = function(data,iterations) {
         var adjustedNegativeInformationGain = negativeInformationGain / normalizedValue;
         var adjustedPositiveInformationGain = positiveInformationGain / normalizedValue;
         // randomly permutate training instances
-        // var shuffledData = _.shuffle(data); // what is the point?
+        // var shuffledData = _.shuffle(data); //todo: what is the point?
         partition.inCorrectlyClassifiedExamples.forEach(function(example) {
             //error = CalcError(net, datum)
             var error = example.datum.output - example.networkOutput;
@@ -173,8 +182,8 @@ Network.prototype.informationGainTrain = function(data,iterations) {
             }
             //console.log("informationGainTrain - error: " + error);
             //Update the nonfrozen weights with standard back propagation
-            //todo: implement >> UpdateNonfrozenWeights(net,error)
-        });
+            this.backpropagateError(error);
+        }.bind(this));
     }
 };
 

@@ -27,6 +27,15 @@ ParentNode.prototype.freeze = function() {
     });
 };
 
+ParentNode.prototype.freezeRecursive = function() {
+    this.edges.forEach(function(edge) {
+        edge.freeze();
+        if(edge.node.edges != null) {
+            edge.node.freezeRecursive();
+        }
+    });
+};
+
 ParentNode.prototype.calculateWeightedSum = function() {
     var sum = 0;
     this.edges.forEach(function(edge) {
