@@ -72,7 +72,7 @@ Network.prototype.getNetworkPartition = function(data) {
         var expectedOutput = datum.output;
         // calculate network classification for the example input
         // datum.network is optional property used for mocking network output
-        var networkOutput = (datum.network !== "undefined") ? datum.network : run(datum.input);
+        var networkOutput = this.denormalize((datum.hasOwnProperty("network")) ? datum.network : this.run(datum.input));
         if(expectedOutput == firstClass) {
             // handle positive example
             if(networkOutput == firstClass) {
@@ -112,6 +112,10 @@ Network.prototype.getNetworkPartition = function(data) {
         inCorrectlyClassifiedExamples: InCorrectlyClassifiedExamples,
         classes: classes
     };
+};
+
+Network.prototype.denormalize = function(output) {
+    return (output > 0.5) ? 1.0 : 0.0;
 };
 
 /**

@@ -44,7 +44,7 @@ var normalizeInput = function(input) {
 };
 
 var determineSign = function(input) {
-    return input > 0 ? 1 : 0;
+    return input > 0 ? 1.0 : 0.0;
 };
 
 var identity = function(input) {
