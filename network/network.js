@@ -7,9 +7,9 @@ var Network = function(options) {
     this.rootNode = new RootNode();
     this.activationFunction = options.activationFunction || Utils.sigmoid;
     this.activationDerivative = options.activationDerivative || Utils.sigmoidDerivative;
-    this.learningRate = options.learningRate || 0.1;
+    this.learningRate = options.learningRate || 0.5;
     this.momentum = options.momentum || 0.5;
-    this.iterations = options.iterations || 20000;
+    this.iterations = options.iterations || 50000;
 };
 
 Network.prototype.train = function(data) {
@@ -179,7 +179,7 @@ Network.prototype.informationGainTrain = function(data,iterations) {
 
 Network.prototype.clone = function clone() {
     var newNetwork = new Network();
-    return _.extend(newNetwork,this);
+    return _.extend(newNetwork, this);
 };
 
 module.exports = Network;
