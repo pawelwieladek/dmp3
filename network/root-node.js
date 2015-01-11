@@ -20,6 +20,13 @@ RootNode.prototype.calculateDelta = function(output, activationDerivative) {
     ParentNode.prototype.pushDeltaForward.call(this, activationDerivative);
 };
 
+RootNode.prototype.calculateDeltaForError = function(error, activationDerivative) {
+    this.error = error;
+    this.delta = this.error * activationDerivative(this.output);
+
+    ParentNode.prototype.pushDeltaForward.call(this, activationDerivative);
+};
+
 RootNode.prototype.adjustWeights = function(learningRate, momentum) {
     this.edges.forEach(function(edge) {
         edge.calculateWeight(learningRate, momentum, this.delta);

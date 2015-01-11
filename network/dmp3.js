@@ -15,10 +15,6 @@ var Dmp3 = function(options) {
  * @return Network
  */
 Dmp3.prototype.learn = function(data) {
-    // test calls
-    //var net = new Network();
-    //this.improvementDrivenTraining(net,data);
-
     /*
     the number of hidden nodes for new children.
      */
@@ -60,7 +56,7 @@ Dmp3.prototype.learn = function(data) {
     /*
      freeze the weights of parent_net (currentNetwork)
      */
-    //todo: freezing
+    currentNetwork.freeze();
 
     var noImprovement = 0;
 
@@ -110,7 +106,7 @@ Dmp3.prototype.learn = function(data) {
             /*
              freeze the weights of parent_net (currentNetwork)
              */
-            //todo: freezing
+            currentNetwork.freeze();
         } else {
             noImprovement += 1;
             numberOfHiddenNodes += 1;
