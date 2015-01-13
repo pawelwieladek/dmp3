@@ -2,37 +2,37 @@ var _ = require("underscore");
 var Network = require("../network/network");
 var Dmp3 = require("../network/dmp3");
 
-console.log("Information Gain tests");
-
-// test information gain with example of O's and X's from DMP3 description
-data = [];
-for(i = 0; i < 13; i++) {
-    data.push({
-        input: 0.0,
-        output: 1.0,
-        network: 1.0
-    });
-}
-for(i = 0; i < 25; i++) {
-    data.push({
-        input: 0.0,
-        output: 1.0,
-        network: 0.0
-    });
-}
-for(i = 0; i < 7; i++) {
-    data.push({
-        input: 0.0,
-        output: 0.0,
-        network: 0.0
-    });
-}
-var network = new Network();
-network.train(data);
-result = network.getInformationGain(data);
-network = null;
-console.log("Expected: 0.085");
-console.log("Actual: " + result);
+//console.log("Information Gain tests");
+//
+//// test information gain with example of O's and X's from DMP3 description
+//data = [];
+//for(i = 0; i < 13; i++) {
+//    data.push({
+//        input: 0.0,
+//        output: 1.0,
+//        network: 1.0
+//    });
+//}
+//for(i = 0; i < 25; i++) {
+//    data.push({
+//        input: 0.0,
+//        output: 1.0,
+//        network: 0.0
+//    });
+//}
+//for(i = 0; i < 7; i++) {
+//    data.push({
+//        input: 0.0,
+//        output: 0.0,
+//        network: 0.0
+//    });
+//}
+//var network = new Network();
+//network.train(data);
+//result = network.getInformationGain(data);
+//network = null;
+//console.log("Expected: 0.085");
+//console.log("Actual: " + result);
 
 console.log("DMP3 learn tests");
 var i;

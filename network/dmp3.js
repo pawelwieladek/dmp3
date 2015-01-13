@@ -1,4 +1,3 @@
-var Utils = require("./utils");
 var Network = require("./network");
 
 var Dmp3 = function(options) {
@@ -60,7 +59,11 @@ Dmp3.prototype.learn = function(data) {
 
     var noImprovement = 0;
 
+    var debugLoopNumber = 0;
+
     do {
+
+        console.log("DMP.loop[" + debugLoopNumber++ + "] started...");
 
         var newNetwork = currentNetwork.clone();
         /*
@@ -81,9 +84,11 @@ Dmp3.prototype.learn = function(data) {
             // get copy of newNetwork
             networks.push(newNetwork.clone());
         }
-        networks.forEach(function(network){
+        networks.forEach(function(network, i){
             // train network
+            console.log("network[" + i + "] started...");
             network = this.improvementDrivenTraining(network,data);
+            console.log("network[" + i + "].improvementDrivenTraining done.");
             // get information gain
             var networkInformationGain = network.getInformationGain(data);
             // check if information gain is better than in new network
@@ -126,8 +131,12 @@ Dmp3.prototype.learn = function(data) {
  * @param data
  */
 Dmp3.prototype.improvementDrivenTraining = function(currentNetwork,data) {
+    console.log("informationGainTrain started...");
     currentNetwork.informationGainTrain(data,this.informationGainTrainIterations);
+    console.log("informationGainTrain done.");
+    console.log("lazyTrain started...");
     currentNetwork = this.lazyTrain(currentNetwork,data,this.lazyTrainInnerTrainIterations,this.lazyTrainMaximumTries);
+    console.log("lazyTrain done.");
     return currentNetwork;
 };
 
@@ -150,7 +159,7 @@ Dmp3.prototype.lazyTrain = function(currentNetwork, data, iterations,maxtries) {
         // check if trained network has better information gain than bestNetwork
         if(currentNetwork.getInformationGain(data) > bestNetwork.getInformationGain(data))
         {
-            // update bestNetworm with currentNetwork
+            // update bestNetwork with currentNetwork
             bestNetwork = currentNetwork.clone();
             i = 0;
         }

@@ -1,7 +1,5 @@
-var _ = require("underscore");
 var Utils = require("./utils");
 var RootNode = require("./root-node");
-var ChildNode = require("./child-node");
 
 var Network = function(options) {
     options = options || {};
@@ -10,7 +8,7 @@ var Network = function(options) {
     this.activationDerivative = options.activationDerivative || Utils.sigmoidDerivative;
     this.learningRate = options.learningRate || 0.4;
     this.momentum = options.momentum || 0.2;
-    this.iterations = options.iterations || 10000;
+    this.iterations = options.iterations || 5000;
 };
 
 Network.prototype.train = function(data) {
@@ -53,6 +51,7 @@ Network.prototype.freeze = function() {
  * @returns {{p_high: number, n_high: number, p_low: number, n_low: number}}
  */
 Network.prototype.getNetworkPartition = function(data) {
+    this.rootNode.initializeInput(data[0].input.length);
     var classes = [1.0,0.0];
     var firstClass = classes[0];
     var secondClass = classes[1];
@@ -172,7 +171,7 @@ Network.prototype.informationGainTrain = function(data,iterations) {
         var normalizedValue = Math.max(negativeInformationGain,positiveInformationGain);
         var adjustedNegativeInformationGain = negativeInformationGain / normalizedValue;
         var adjustedPositiveInformationGain = positiveInformationGain / normalizedValue;
-        // randomly permutate training instances
+        // randomly permute training instances
         // var shuffledData = _.shuffle(data); //todo: what is the point?
         partition.inCorrectlyClassifiedExamples.forEach(function(example) {
             //error = CalcError(net, datum)
