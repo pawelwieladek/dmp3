@@ -8,7 +8,7 @@ var Network = function(options) {
     this.activationDerivative = options.activationDerivative || Utils.sigmoidDerivative;
     this.learningRate = options.learningRate || 0.4;
     this.momentum = options.momentum || 0.2;
-    this.iterations = options.iterations || 500;
+    this.iterations = options.iterations || 10000;
 };
 
 Network.prototype.train = function(data) {

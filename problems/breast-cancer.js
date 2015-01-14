@@ -15,6 +15,9 @@ function Problem(options) {
     this.normalize = function(val) {
         return (val / (1.2 * this.maxValue)) + 0.001;
     };
+    this.denormalize = function(val) {
+        return (val > 0.5) ? 1.0 : 0.0;
+    };
 
     this.datasetFile = options.datasetFile;
     this.inputClasses = [];
@@ -90,7 +93,7 @@ Problem.prototype = {
             var positive = 0;
             var negative = 0;
             this.dataTest.forEach(function(datum) {
-                var output = network.run(datum);
+                var output = this.denormalize(network.run(datum.input));
                 var expected = datum.output;
                 if(output == expected) {
                     positive++;
@@ -101,7 +104,7 @@ Problem.prototype = {
                     output: output,
                     expected: expected
                 });
-            });
+            }.bind(this));
             var accuracy = (positive / (positive + negative));
             console.log(results);
             console.log("Network accuracy: " + accuracy);

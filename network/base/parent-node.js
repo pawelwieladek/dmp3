@@ -16,9 +16,11 @@ ParentNode.prototype.initializeInput = function(inputSize) {
     this.inputSize = inputSize;
     var i;
     for(i = 0; i < this.inputSize; i++) {
-        var inputNode = new InputNode();
-        var edge = new Edge(inputNode);
-        this.edges.push(edge);
+        if(this.edges.length < inputSize) {
+            var inputNode = new InputNode();
+            var edge = new Edge(inputNode);
+            this.edges.push(edge);
+        }
     }
 };
 

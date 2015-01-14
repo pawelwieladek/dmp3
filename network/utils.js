@@ -66,14 +66,26 @@ module.exports.randoms = function randoms(size, randomFunction) {
 };
 
 module.exports.information = function information(p, n) {
+    if((p + n) == 0 || p == 0 || n == 0) {
+        return 0;
+    }
     var result = -( (p / (p + n)) * this.log(2, p / (p + n)) + (n / (p + n)) * this.log(2, n / (p + n)) );
+    if(isNaN(result)) {
+        return result;
+    }
     return result;
 };
 
 module.exports.informationPartition = function informationPartition(p_high, n_high, p_low, n_low) {
     var p = p_high + p_low;
     var n = n_high + n_low;
+    if((p + n) == 0 || (p_high + n_high) == 0 || (p_low + n_low) == 0) {
+        return 0;
+    }
     var result = ((p_high + n_high) / (p + n)) * this.information(p_high, n_high) + ((p_low + n_low) / (p + n)) * this.information(p_low, n_low);
+    if(isNaN(result)) {
+        return result;
+    }
     return result;
 };
 
@@ -81,6 +93,9 @@ module.exports.informationGain = function informationGain(p_high, n_high, p_low,
     var p = p_high + p_low;
     var n = n_high + n_low;
     var result = this.information(p, n) - this.informationPartition(p_high, n_high, p_low, n_low);
+    if(isNaN(result)) {
+        return result;
+    }
     return result;
 };
 

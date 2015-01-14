@@ -3,9 +3,9 @@ var Network = require("./network");
 var Dmp3 = function(options) {
     options = options || {};
     // configuration
-    this.informationGainTrainIterations = 20; //default 1000
-    this.lazyTrainInnerTrainIterations = 5; //default 10
-    this.lazyTrainMaximumTries = 5; //default 20
+    this.informationGainTrainIterations = 1000; //default 1000
+    this.lazyTrainInnerTrainIterations = 10; //default 10
+    this.lazyTrainMaximumTries = 20; //default 20
 };
 
 /**
