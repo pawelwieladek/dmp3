@@ -1,3 +1,4 @@
+var _ = require("underscore");
 var Node = require("./node");
 var Edge = require("./edge");
 var InputNode = require("./../input-node");
@@ -45,8 +46,13 @@ ParentNode.prototype.calculateWeightedSum = function() {
 };
 
 ParentNode.prototype.feedForward = function(input, activationFunction) {
+    var inputValues = _.clone(input);
     this.edges.forEach(function(edge) {
-        edge.node.feedForward(input, activationFunction);
+        if(edge.node instanceof InputNode) {
+            edge.node.feedForward(inputValues.pop(), activationFunction);
+        } else {
+            edge.node.feedForward(input, activationFunction);
+        }
     });
 
     var sum = 0;

@@ -6,7 +6,7 @@ var data = [];
 var totalData = 10;
 
 var normalizeInput = function(input) {
-    return [input / totalData];
+    return [input / totalData, input / totalData];
 };
 
 var determineSign = function(input) {
@@ -33,9 +33,9 @@ net.train(data);
 console.log("Backpropagation tests");
 
 var result;
-result = net.run(normalizeInput(9));
+result = net.run(normalizeInput(9, 9));
 console.log("Expected: 1");
 console.log("Actual: " + result);
-result = net.run(normalizeInput(-9));
+result = net.run(normalizeInput(-9, -9));
 console.log("Expected: 0");
 console.log("Actual: " + result);
