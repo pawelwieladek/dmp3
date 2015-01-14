@@ -3,9 +3,9 @@ var Network = require("./network");
 var Dmp3 = function(options) {
     options = options || {};
     // configuration
-    this.informationGainTrainIterations = 1000;
-    this.lazyTrainInnerTrainIterations = 10;
-    this.lazyTrainMaximumTries = 20;
+    this.informationGainTrainIterations = 20; //default 1000
+    this.lazyTrainInnerTrainIterations = 5; //default 10
+    this.lazyTrainMaximumTries = 5; //default 20
 };
 
 /**
@@ -37,9 +37,11 @@ Dmp3.prototype.learn = function(data) {
         // get copy of currentNetwork
         networks.push(currentNetwork.clone());
     }
-    networks.forEach(function(network){
+    networks.forEach(function(network, index){
+        console.log("DMP.standardTrain[" + index + "] started...");
         // train network
         network.train(data);
+        console.log("DMP.getInformationGain[" + index + "] started...");
         // get information gain
         var networkInformationGain = network.getInformationGain(data);
         // check if information gain is better than in current network

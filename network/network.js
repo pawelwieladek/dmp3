@@ -8,7 +8,7 @@ var Network = function(options) {
     this.activationDerivative = options.activationDerivative || Utils.sigmoidDerivative;
     this.learningRate = options.learningRate || 0.4;
     this.momentum = options.momentum || 0.2;
-    this.iterations = options.iterations || 5000;
+    this.iterations = options.iterations || 500;
 };
 
 Network.prototype.train = function(data) {
@@ -37,6 +37,9 @@ Network.prototype.backpropagateError = function(error) {
 
 Network.prototype.run = function(input) {
     this.rootNode.feedForward(input, this.activationFunction);
+    if(isNaN(this.rootNode.output)) {
+        return this.rootNode.output;
+    }
     return this.rootNode.output;
 };
 
@@ -66,6 +69,7 @@ Network.prototype.getNetworkPartition = function(data) {
     // set of examples incorrectly classified by the network
     var InCorrectlyClassifiedExamples = [];
     // iterate all examples
+    var iteration = 1;
     data.forEach(function(datum) {
         // get target class expected by the example
         var expectedOutput = datum.output;

@@ -18,11 +18,19 @@ module.exports.tanhDerivative = function tanhDerivative(x) {
 };
 
 module.exports.sigmoid = function sigmoid(x) {
-    return 1 / (1 + Math.exp(-x));
+    var result = 1 / (1 + Math.exp(-x));
+    if(isNaN(result)) {
+        return result;
+    }
+    return result;
 };
 
 module.exports.sigmoidDerivative = function sigmoidDerivative(x) {
-    return (1 - x) * x;
+    var result = (1 - x) * x;
+    if(isNaN(result)) {
+        return result;
+    }
+    return result;
 };
 
 module.exports.randomRange = function randomRange(min, max) {
