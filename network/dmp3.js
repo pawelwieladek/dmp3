@@ -115,6 +115,7 @@ Dmp3.prototype.learn = function(data) {
              */
             currentNetwork.freeze();
         } else {
+            console.log("No improvement. Expand hidden nodes structure.");
             noImprovement += 1;
             numberOfHiddenNodes += 1;
         }
