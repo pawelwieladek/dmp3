@@ -106,6 +106,7 @@ Dmp3.prototype.learn = function(data) {
         // // check if new network information gain is better than in current network
         if(newNetworkInformationGain > currentInformationGain)
         {
+            console.log("Network expansion.");
             // set newNetwork as current network
             currentNetwork = newNetwork;
             currentInformationGain = newNetworkInformationGain;

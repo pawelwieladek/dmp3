@@ -66,7 +66,7 @@ Problem.prototype = {
                         data.output = classIndex;
                     } else {
                         // normalize class index to match valid range
-                        data.input[i] = this.normalize(classIndex);
+                        data.input[i] = (classIndex / (this.inputClasses[i].length -1));
                     }
                 }
                 return data;
@@ -93,15 +93,16 @@ Problem.prototype = {
             var positive = 0;
             var negative = 0;
             this.dataTest.forEach(function(datum) {
-                var output = this.denormalize(network.run(datum.input));
+                var output = network.run(datum.input);
                 var expected = datum.output;
-                if(output == expected) {
+                if(this.denormalize(output) == expected) {
                     positive++;
                 } else {
                     negative++;
                 }
                 results.push({
-                    output: output,
+                    outputAccurate: output,
+                    outputDenormalized: this.denormalize(output),
                     expected: expected
                 });
             }.bind(this));
