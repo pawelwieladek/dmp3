@@ -65,8 +65,16 @@ Problem.prototype = {
                     if(i == (pattern.length - 1)) {
                         data.output = classIndex;
                     } else {
-                        // normalize class index to match valid range
-                        data.input[i] = (classIndex / (this.inputClasses[i].length -1));
+                        // split attribute into multiple inputs of number matching input classes
+                        // all inputs are 0 and current class input gets value of 1
+                        this.inputClasses[i].forEach(function(inputClass, index){
+                            if (index == classIndex) {
+                                data.input.push(1);
+                            } else {
+                                data.input.push(0);
+                            }
+                        }.bind(this));
+                        //data.input.push = (classIndex / (this.inputClasses[i].length -1));
                     }
                 }
                 return data;
