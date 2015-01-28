@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require("path");
 var parse = require("csv-parse");
 var _ = require("underscore");
+var colors = require("colors/safe");
 
 var Network = require("../network/network");
 var Dmp3 = require("../network/dmp3");
@@ -90,8 +91,14 @@ Problem.prototype = {
     },
     trainNetwork: function() {
         return Q.fcall(function() {
-            dmp3 = new Dmp3();
-            network = dmp3.learn(this.dataTrain);
+            console.log(colors.blue("### DMP started ###"));
+
+            var dmp3 = new Dmp3();
+            var network = dmp3.learn(this.dataTrain);
+
+            console.log(colors.blue("### Training finished ###"));
+            console.log(colors.magenta("Network structure: " + network.rootNode.toString()));
+
             return network;
         }.bind(this));
     },
@@ -115,8 +122,15 @@ Problem.prototype = {
                 });
             }.bind(this));
             var accuracy = (positive / (positive + negative));
-            console.log(results);
-            console.log("Network accuracy: " + accuracy);
+
+            console.log(colors.blue("### Testing finished ###"));
+            console.log(colors.green("Network accuracy: " + accuracy));
+            console.log(colors.white("Number of results: " + results.length));
+            console.log(colors.grey("=== Results ==="));
+            console.log("outputAccurate,outputDenormalized,expected");
+            results.forEach(function(result) {
+                console.log(result.outputAccurate + "," + result.outputDenormalized + "," + result.expected);
+            });
             return results;
         }.bind(this));
     },
