@@ -6,9 +6,9 @@ var Network = function(options) {
     this.rootNode = new RootNode();
     this.activationFunction = options.activationFunction || Utils.sigmoid;
     this.activationDerivative = options.activationDerivative || Utils.sigmoidDerivative;
-    this.learningRate = options.learningRate || 0.4;
-    this.momentum = options.momentum || 0.2;
-    this.iterations = options.iterations || 10000;
+    this.learningRate = options.learningRate || 0.01;
+    this.momentum = options.momentum || 0.01;
+    this.iterations = options.iterations || 1;
 };
 
 Network.prototype.train = function(data) {

@@ -7,15 +7,17 @@ var colors = require("colors/safe");
 
 var Network = require("../network/network");
 var Dmp3 = require("../network/dmp3");
+var logger = require("../network/utils").logger;
 
 function Problem(options) {
     this.dataTrain = [];
     this.dataTest = [];
-    this.globalError = [];
     this.maxValue = 0;
-    this.normalize = function(val) {
-        return (val / (1.2 * this.maxValue)) + 0.001;
-    };
+    this.problemNumber = options.problemNumber || 1;
+    this.backpropagationIterations = options.backpropagationIterations;
+    this.informationGainTrainIterations = options.informationGainTrainIterations;
+    this.lazyTrainInnerTrainIterations = options.lazyTrainInnerTrainIterations;
+    this.lazyTrainMaximumTries = options.lazyTrainMaximumTries;
     this.denormalize = function(val) {
         return (val > 0.5) ? 1.0 : 0.0;
     };
@@ -110,13 +112,24 @@ Problem.prototype = {
     },
     trainNetwork: function() {
         return Q.fcall(function() {
-            console.log(colors.blue("### DMP started ###"));
+            logger(colors.blue("### DMP started ###"));
 
-            var dmp3 = new Dmp3();
+            var dmp3 = new Dmp3({
+                backpropagationIterations: this.backpropagationIterations,
+                informationGainTrainIterations: this.informationGainTrainIterations,
+                lazyTrainInnerTrainIterations: this.lazyTrainInnerTrainIterations,
+                lazyTrainMaximumTries: this.lazyTrainMaximumTries
+            });
+
             var network = dmp3.learn(this.dataTrain);
 
-            console.log(colors.blue("### Training finished ###"));
-            console.log(colors.magenta("Network structure: " + network.rootNode.toString()));
+            this.backpropagationIterations = dmp3.backpropagationIterations;
+            this.informationGainTrainIterations = dmp3.informationGainTrainIterations;
+            this.lazyTrainInnerTrainIterations = dmp3.lazyTrainInnerTrainIterations;
+            this.lazyTrainMaximumTries = dmp3.lazyTrainMaximumTries;
+
+            logger(colors.blue("### Training finished ###"));
+            logger(colors.magenta("Network structure: " + network.rootNode.toString()));
 
             return network;
         }.bind(this));
@@ -142,15 +155,21 @@ Problem.prototype = {
             }.bind(this));
             var accuracy = (positive / (positive + negative));
 
-            console.log(colors.blue("### Testing finished ###"));
+            console.log(colors.yellow("Testing finished: problem " + this.problemNumber));
+            console.log(colors.white("backpropagationIterations: " + this.backpropagationIterations));
+            console.log(colors.white("informationGainTrainIterations: " + this.informationGainTrainIterations));
+            console.log(colors.white("lazyTrainInnerTrainIterations: " + this.lazyTrainInnerTrainIterations));
+            console.log(colors.white("lazyTrainMaximumTries: " + this.lazyTrainMaximumTries));
+            console.log(colors.magenta("Network structure: " + network.rootNode.toString()));
+            console.log(colors.cyan("Network nodes number: " + network.rootNode.countNodes()));
             console.log(colors.green("Network accuracy: " + accuracy));
-            console.log(colors.white("Number of results: " + results.length));
-            console.log(colors.grey("=== Results ==="));
-            console.log("outputAccurate,outputDenormalized,expected");
+            logger(colors.white("Number of results: " + results.length));
+            logger(colors.grey("=== Results ==="));
+            logger("outputAccurate,outputDenormalized,expected");
             results.forEach(function(result) {
-                console.log(result.outputAccurate + "," + result.outputDenormalized + "," + result.expected);
+                logger(result.outputAccurate + "," + result.outputDenormalized + "," + result.expected);
             });
-
+            console.log(colors.white("---"));
             return results;
         }.bind(this));
     },
@@ -164,7 +183,7 @@ Problem.prototype = {
             .then(this.trainNetwork.bind(this))
             .then(this.testNetwork.bind(this))
             .fail(function(err) {
-                console.log(err);
+                logger(err);
             })
     }
 };

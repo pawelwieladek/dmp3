@@ -67,4 +67,19 @@ RootNode.prototype.toString = function() {
     return "[" + childNodes.toString() + "]";
 };
 
+RootNode.prototype.countNodes = function() {
+    var nodesNumber = 1;
+    this.edges.forEach(function(childEdge) {
+        if(childEdge.node instanceof ChildNode) {
+            nodesNumber++;
+            childEdge.node.edges.forEach(function(hiddenEdge) {
+                if(hiddenEdge.node instanceof HiddenNode) {
+                    nodesNumber++;
+                }
+            });
+        }
+    });
+    return nodesNumber;
+};
+
 module.exports = RootNode;
