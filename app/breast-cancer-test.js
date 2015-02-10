@@ -10,18 +10,12 @@ argv.i = argv.i || 1;
 argv.j = argv.j || 1;
 argv.k = argv.k || 1;
 
-for (var k = 0; k < argv.k; k++) {
-    for (var j = 0; j < argv.j; j++) {
-        for (var i = 1; i <= argv.i; i++) {
-            var problem = new Problem({
-                problemNumber: i,
-                backpropagationIterations: k > 0 ? 10 * Math.pow(2, k) : 1,
-                informationGainTrainIterations: 10 * Math.pow(2, j),
-                lazyTrainInnerTrainIterations: Math.pow(2, j),
-                lazyTrainMaximumTries: Math.pow(2, j),
-                datasetFile: "../resources/breast-cancer.csv"
-            });
-            problem.solve();
-        }
-    }
-}
+var problem = new Problem({
+    problemNumber: argv.i,
+    backpropagationIterations: Math.pow(argv.k, 2),
+    informationGainTrainIterations: 10 * Math.pow(argv.j, 2),
+    lazyTrainInnerTrainIterations: Math.pow(argv.j, 2),
+    lazyTrainMaximumTries: Math.pow(argv.j, 2),
+    datasetFile: "../resources/breast-cancer.csv"
+});
+problem.solve();
