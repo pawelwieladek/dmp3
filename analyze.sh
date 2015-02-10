@@ -36,13 +36,13 @@ fi
 
 # Perform multiple tests
 CURRENT=0
-for (( i=0 ; i<$LIMIT1 ; i++ )); do
-  for (( j=0 ; j<$LIMIT2 ; j++ )); do
-    for (( k=0 ; k<$LIMIT3 ; k++ )); do
+for (( k=1 ; k<=$LIMIT3 ; k++ )); do
+  for (( j=1 ; j<=$LIMIT2 ; j++ )); do
+    for (( i=1 ; i<=$LIMIT1 ; i++ )); do
       CURRENT=$(($CURRENT+1))
-      echo -e "$COL_RED \033[1m----------   ITERATION $CURRENT / $ITERATIONS    ----------"
+      echo -e "$COL_RED\033[1m----------    ITERATION $CURRENT / $ITERATIONS    ----------"
       echo -e "----------   i: $i | j: $j | k: $k   ----------\033[0m $COL_RESET"
-      node $SCRIPTFILE $i $j $k
+      node $SCRIPTFILE -i $i -j $j -k $k
     done
   done
 done

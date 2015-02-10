@@ -150,7 +150,6 @@ Problem.prototype = {
             results.forEach(function(result) {
                 logger(result.outputAccurate + "," + result.outputDenormalized + "," + result.expected);
             });
-            console.log(colors.white("---"));
             return results;
         }.bind(this));
     },
