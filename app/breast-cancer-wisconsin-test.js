@@ -1,9 +1,9 @@
 var argv = require('yargs').argv;
 var colors = require("colors/safe");
 
-var Problem = require("../problems/breast-cancer");
+var Problem = require("../problems/breast-cancer-wisconsin");
 
-console.log(colors.white("Breast Cancer tests"));
+console.log(colors.white("Breast Cancer Wisconsin tests"));
 console.log("---");
 
 argv.i = argv.i || 1;
@@ -19,7 +19,7 @@ for (var k = 0; k < argv.k; k++) {
                 informationGainTrainIterations: 10 * Math.pow(2, j),
                 lazyTrainInnerTrainIterations: Math.pow(2, j),
                 lazyTrainMaximumTries: Math.pow(2, j),
-                datasetFile: "../resources/breast-cancer.csv"
+                datasetFile: "../resources/breast-cancer-wisconsin.csv"
             });
             problem.solve();
         }

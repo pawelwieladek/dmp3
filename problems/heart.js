@@ -24,6 +24,12 @@ function Problem(options) {
 
     this.datasetFile = options.datasetFile;
     this.inputClasses = [];
+    this.inputAttributeMax = [];
+
+    this.inputAttributeTypes = {
+        real: [0,3,4,7,9,11],
+        class: [1,2,5,6,8,10,12,13]
+    };
 }
 
 Problem.prototype = {
@@ -44,10 +50,17 @@ Problem.prototype = {
         return Q.fcall(function() {
             for(var i = 0; i < dataset[0].length; i++)
             {
-                var attributeClasses = _.map(dataset, function(x) { return x[i] }.bind(this));
-                this.inputClasses[i] = _.uniq(attributeClasses);
-                if(this.inputClasses[i].length > this.maxValue) {
-                    this.maxValue = this.inputClasses[i].length;
+                if (_.contains(this.inputAttributeTypes.class,i))
+                {
+                    var attributeClasses = _.map(dataset, function(x) { return x[i] }.bind(this));
+                    this.inputClasses[i] = _.uniq(attributeClasses);
+                    if(this.inputClasses[i].length > this.maxValue) {
+                        this.maxValue = this.inputClasses[i].length;
+                    }
+                } else {
+                    var attributeValues = _.map(dataset, function(x) { return parseFloat(x[i]) }.bind(this));
+                    var maxValue = _.max(attributeValues);
+                    this.inputAttributeMax[i] = maxValue;
                 }
             }
             return dataset;
@@ -61,13 +74,16 @@ Problem.prototype = {
                 };
                 for(var i = 0; i < pattern.length; i++)
                 {
-                    // get class index
-                    var classIndex = _.indexOf(this.inputClasses[i],pattern[i]);
+                    if (_.contains(this.inputAttributeTypes.class,i)) {
+                        // get class index
+                        var classIndex = _.indexOf(this.inputClasses[i],pattern[i]);
 
-                    // store in output or input property
-                    if(i == (pattern.length - 1)) {
-                        data.output = classIndex;
-                    } else {
+                        // store in output or input property
+                        if(i == (pattern.length - 1)) {
+                            // get class index
+                            data.output = classIndex;
+                        }
+
                         // split attribute into multiple inputs of number matching input classes
                         // all inputs are 0 and current class input gets value of 1
                         this.inputClasses[i].forEach(function(inputClass, index){
@@ -77,7 +93,10 @@ Problem.prototype = {
                                 data.input.push(0);
                             }
                         }.bind(this));
-                        //data.input.push = (classIndex / (this.inputClasses[i].length -1));
+                    } else {
+                        // attribute is real so normalize it
+                        var normalizedValue = pattern[i] / this.inputAttributeMax[i];
+                        data.input.push(normalizedValue);
                     }
                 }
                 return data;

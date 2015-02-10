@@ -2,6 +2,7 @@ var Edge = require("./base/edge");
 var ParentNode = require("./base/parent-node");
 var Utils = require("./utils");
 var ChildNode = require("./child-node");
+var HiddenNode = require("./hidden-node");
 
 var RootNode = function(options) {
     ParentNode.call(this, options);
@@ -48,6 +49,37 @@ RootNode.prototype.addChild = function (weightFunction, hiddenNodesNumber) {
 RootNode.prototype.expandWith = function(hiddenNodesNumber) {
     this.addChild(Utils.randomPositive, hiddenNodesNumber);
     this.addChild(Utils.randomNegative, hiddenNodesNumber);
+};
+
+RootNode.prototype.toString = function() {
+    var childNodes = [];
+    this.edges.forEach(function(childEdge) {
+        if(childEdge.node instanceof ChildNode) {
+            var hiddenNodes = 0;
+            childEdge.node.edges.forEach(function(hiddenEdge) {
+                if(hiddenEdge.node instanceof HiddenNode) {
+                    hiddenNodes++;
+                }
+            });
+            childNodes.push(hiddenNodes);
+        }
+    });
+    return "[" + childNodes.toString() + "]";
+};
+
+RootNode.prototype.countNodes = function() {
+    var nodesNumber = 1;
+    this.edges.forEach(function(childEdge) {
+        if(childEdge.node instanceof ChildNode) {
+            nodesNumber++;
+            childEdge.node.edges.forEach(function(hiddenEdge) {
+                if(hiddenEdge.node instanceof HiddenNode) {
+                    nodesNumber++;
+                }
+            });
+        }
+    });
+    return nodesNumber;
 };
 
 module.exports = RootNode;

@@ -1,3 +1,5 @@
+var argv = require('yargs').argv;
+
 module.exports.tanh = function tanh(x) {
     if(x === Infinity) {
         return 1;
@@ -105,6 +107,12 @@ module.exports.log = function log(base, n) {
     }
     var result = Math.log(n) / Math.log(base);
     return result;
+};
+
+module.exports.logger = function(message) {
+    if (argv.verbose || argv.v) {
+        console.log(message);
+    }
 };
 
 /**
