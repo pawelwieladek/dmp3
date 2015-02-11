@@ -109,9 +109,16 @@ module.exports.log = function log(base, n) {
     return result;
 };
 
-module.exports.logger = function(message) {
-    if (argv.verbose || argv.v) {
-        console.log(message);
+module.exports.logger = {
+    v: function(message) {
+        if (argv.verbose || argv.v) {
+            console.log(message);
+        }
+    },
+    d: function(message) {
+        if (argv.debug || argv.d) {
+            console.log(message);
+        }
     }
 };
 

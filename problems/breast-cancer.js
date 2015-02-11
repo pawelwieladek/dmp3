@@ -13,7 +13,6 @@ function Problem(options) {
     this.dataTrain = [];
     this.dataTest = [];
     this.maxValue = 0;
-    this.problemNumber = options.problemNumber || 1;
     this.backpropagationIterations = options.backpropagationIterations;
     this.informationGainTrainIterations = options.informationGainTrainIterations;
     this.lazyTrainInnerTrainIterations = options.lazyTrainInnerTrainIterations;
@@ -93,7 +92,7 @@ Problem.prototype = {
     },
     trainNetwork: function() {
         return Q.fcall(function() {
-            logger(colors.blue("### DMP started ###"));
+            logger.d(colors.blue("### DMP started ###"));
 
             var dmp3 = new Dmp3({
                 backpropagationIterations: this.backpropagationIterations,
@@ -109,8 +108,8 @@ Problem.prototype = {
             this.lazyTrainInnerTrainIterations = dmp3.lazyTrainInnerTrainIterations;
             this.lazyTrainMaximumTries = dmp3.lazyTrainMaximumTries;
 
-            logger(colors.blue("### Training finished ###"));
-            logger(colors.magenta("Network structure: " + network.rootNode.toString()));
+            logger.d(colors.blue("### Training finished ###"));
+            logger.d(colors.magenta("Network structure: " + network.rootNode.toString()));
 
             return network;
         }.bind(this));
@@ -136,21 +135,25 @@ Problem.prototype = {
             }.bind(this));
             var accuracy = (positive / (positive + negative));
 
-            console.log(colors.yellow("Testing finished: problem " + this.problemNumber));
-            console.log(colors.white("backpropagationIterations: " + this.backpropagationIterations));
-            console.log(colors.white("informationGainTrainIterations: " + this.informationGainTrainIterations));
-            console.log(colors.white("lazyTrainInnerTrainIterations: " + this.lazyTrainInnerTrainIterations));
-            console.log(colors.white("lazyTrainMaximumTries: " + this.lazyTrainMaximumTries));
-            console.log(colors.magenta("Network structure: " + network.rootNode.toString()));
-            console.log(colors.cyan("Network nodes number: " + network.rootNode.countNodes()));
-            console.log(colors.green("Network accuracy: " + accuracy));
-            logger(colors.white("Number of results: " + results.length));
-            logger(colors.grey("=== Results ==="));
-            logger("outputAccurate,outputDenormalized,expected");
+            logger.v(colors.white("backpropagationIterations: " + this.backpropagationIterations));
+            logger.v(colors.white("informationGainTrainIterations: " + this.informationGainTrainIterations));
+            logger.v(colors.white("lazyTrainInnerTrainIterations: " + this.lazyTrainInnerTrainIterations));
+            logger.v(colors.white("lazyTrainMaximumTries: " + this.lazyTrainMaximumTries));
+            logger.v(colors.magenta("Network structure: " + network.rootNode.toString()));
+            logger.v(colors.cyan("Network nodes number: " + network.rootNode.countNodes()));
+            logger.v(colors.green("Network accuracy: " + accuracy));
+            logger.d(colors.white("Number of results: " + results.length));
+            logger.d(colors.grey("=== Results ==="));
+            logger.d("outputAccurate,outputDenormalized,expected");
             results.forEach(function(result) {
-                logger(result.outputAccurate + "," + result.outputDenormalized + "," + result.expected);
+                logger.d(result.outputAccurate + "," + result.outputDenormalized + "," + result.expected);
             });
-            return results;
+
+            return {
+                structure: network.rootNode.countNodes(),
+                accuracy: accuracy
+            };
+
         }.bind(this));
     },
     solve: function() {
@@ -163,7 +166,7 @@ Problem.prototype = {
             .then(this.trainNetwork.bind(this))
             .then(this.testNetwork.bind(this))
             .fail(function(err) {
-                logger(err);
+                logger.d(err);
             })
     }
 };

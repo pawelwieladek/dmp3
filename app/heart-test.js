@@ -3,19 +3,35 @@ var colors = require("colors/safe");
 
 var Problem = require("../problems/heart");
 
-console.log(colors.white("Heart tests"));
-console.log("---");
-
 argv.i = argv.i || 1;
 argv.j = argv.j || 1;
 argv.k = argv.k || 1;
 
-var problem = new Problem({
-    problemNumber: argv.i,
-    backpropagationIterations: Math.pow(argv.k, 2),
-    informationGainTrainIterations: 10 * Math.pow(argv.j, 2),
-    lazyTrainInnerTrainIterations: Math.pow(argv.j, 2),
-    lazyTrainMaximumTries: Math.pow(argv.j, 2),
-    datasetFile: "../resources/heart.csv"
-});
-problem.solve();
+var results = {
+    structure: [],
+    accuracy: []
+};
+
+function loop(iterator, limit) {
+    if (iterator >= limit) {
+        var averageStructure = results.structure.reduce(function(a, b) { return a + b; }) / results.structure.length;
+        var averageAccuracy = results.accuracy.reduce(function(a, b) { return a + b; }) / results.accuracy.length;
+        console.log(averageAccuracy + "," + averageStructure);
+        return;
+    }
+
+    var problem = new Problem({
+        backpropagationIterations: argv.k,
+        informationGainTrainIterations: argv.j,
+        lazyTrainInnerTrainIterations: argv.j,
+        lazyTrainMaximumTries: argv.j,
+        datasetFile: "../resources/heart.csv"
+    });
+    problem.solve().then(function(output) {
+        results.structure.push(output.structure);
+        results.accuracy.push(output.accuracy);
+        loop(iterator + 1, limit);
+    });
+}
+
+loop(0, argv.i);
