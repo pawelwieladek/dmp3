@@ -14,7 +14,7 @@ npm install
 node app/[FILENAME] -i PROBLEM_ITERATIONS -j DMP3_ATTR_ITERATIONS -k BACKPROPAGATION_ITERATIONS
 ```
 
-Examples:
+### Examples:
 
 Overall problem iterations: 10
 
